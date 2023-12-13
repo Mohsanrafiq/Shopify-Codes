@@ -1,0 +1,128 @@
+<!--- Product Variant Meta Objects --->
+{% if section.settings.showvariantbox == true %}
+  {% assign target_product = product.title | downcase %}
+  {% assign productsPerPage = 1000 %}
+  {% assign target_sku = product.metafields.custom.product_sku_custom %}
+
+    <div class="product__block__variants product__block__meta__variants" style="--PB: {{ block.settings.padding_bottom }}px; --OPTION-SPACE: {{ block.settings.option_space }}px;" {{ block.shopify_attributes }}>
+        <div class="product__variants">
+            <div class="Product__Variant__box swiper">
+                <div class="Product__variant__box_inner item-wrapper swiper-wrapper"> 
+
+
+                    {% paginate collections.all.products by productsPerPage %}
+                 
+                       {% assign productFound = false %}
+
+                        {% for product in collections.all.products %}
+                          {% if product.metafields.custom.product_sku_custom == target_sku and target_sku != blank and productFound == false %}
+                            {% assign variantColor = "#000" %}
+                            {% for pro in shop.metaobjects.color.values %}
+                              {%  assign product_title = pro.product.value.title | downcase %}
+                              {% if pro.color_code.value != blank %}
+                                {% assign variantColor = pro.color_code.value %}
+                              {% endif %}
+                              <div class="item-slide swiper-slide" data-sorting="{{ forloop.index }}" data-coloring="{{ variantColor }}" product-title="{{ product_title }}">
+                                <a href="{{ pro.product.value.url }}" style="background-color: {{ variantColor }};" class="Product__meta_variant {% if target_product == product_title %} activeVariant {% endif %}" title="{{ product_title }}"></a>
+                              </div>
+                            {% endfor %}
+                            {% assign productFound = true %}
+                          {% endif %}
+                        {% endfor %}
+
+
+
+                      {% comment %}
+                      {% assign seen_skus = "" %}
+                      {% for product in collections.all.products %}
+                        {% if product.metafields.custom.product_sku_custom == target_sku and target_sku != blank %}
+                          {% unless seen_skus contains target_sku %}
+                            {% assign seen_skus = seen_skus | append: target_sku | append: "," %}
+                            {% assign metaVariants = product.metafields.custom.products_color.value %}
+                            {% for metaVariant in metaVariants %}
+                              {% if metaVariant.product.value != null %}
+                                {% assign productTitle = product.title | downcase %}
+                                {% assign variantTitle = metaVariant.product.value.title | downcase %}
+                                {% assign variantColor = "#000" %}
+                                {% if metaVariant.color_code != blank %}
+                                  {% assign variantColor = metaVariant.color_code %}
+                                {% endif %}
+                                <div class="item-slide swiper-slide" data-sorting="{{ forloop.index }}" data-coloring="{{ variantColor }}" product-title="{{ variantTitle }}">
+                                  <a href="{{ metaVariant.product.value.url }}" style="background-color: {{ variantColor }};" class="Product__meta_variant {% if variantTitle == target_product %} activeVariant {% endif %}" title="{{ metaVariant.product.value.title }}"></a>
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                          {% endunless %}
+                        {% endif %}
+                      {% endfor %} {% endcomment %}
+                      
+                      <input type="hidden" name="pagination" value="" data-pagination="{{ paginate.pages }}"/>
+                    {% endpaginate %}
+                </div>
+                <div class="Product__Variant_button swiper-button-prev"></div>
+                <div class="Product__Variant_button swiper-button-next"></div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% style %}
+.Product__variant__box_inner.item-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 10px;
+    flex-wrap: wrap;
+    padding-left: 5px;
+}
+a.Product__meta_variant.activeVariant::before {
+    content: "";
+    position: absolute;
+    width: 31px;
+    height: 31px;
+    border-radius: 100%;
+    border: 1px solid #8e8e8e;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: 0;
+    margin: auto;
+    transform: translate(-50%);
+    margin: auto auto auto -.01rem;
+}
+a.Product__meta_variant {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-top: 10px;
+    position: relative;
+    border: 1px solid #1a1a1a40;
+}
+.Product__variant__box_inner .item-slide {
+    width: fit-content;
+}
+.product__variants .Product__Variant_button.swiper-button-next {
+	right: -22px;
+    padding-top: 5px;
+}
+.product__variants .Product__Variant_button.swiper-button-prev {
+	left: -22px;
+    padding-top: 5px;
+}
+.product__variants .swiper-button-next::after, .product__variants  .swiper-button-prev::after {
+	font-size: 20px;
+}
+.swiper-button-next::after, .swiper-rtl .swiper-button-prev::after,
+.swiper-button-prev::after, .swiper-rtl .swiper-button-next::after{
+	color: #000;
+}
+@media only screen and (min-width: 750px) {
+  .Product__Variant__box.swiper {
+      overflow: visible;
+  }
+  .product__variants .Product__Variant_button.swiper-button-next, .product__variants .Product__Variant_button.swiper-button-prev {
+      display: none;
+  }
+}
+{% endstyle %}
