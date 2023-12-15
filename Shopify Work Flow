@@ -1,0 +1,37 @@
+{% for metafields_item in product.metafields %}{% for fields_item in metafields_item.reference.Metaobject.fields %}{{fields_item.value}}-{{fields_item.key}},{% endfor %},{% endfor %}
+
+{% for metafields_item in product.metafields %}{% for fields_item in metafields_item.reference.Metaobject.fields %}{{fields_item.key}},{% endfor %},{% endfor %}
+
+
+
+{% for metafields_item in product.metafields %}  
+  {% for fields_item in metafields_item.reference.Metaobject.fields %}  
+    {% if fields_item.key == 'filter_color_name' %}
+      {{fields_item.value}}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{{ shop.metafields.my_namespace.my_key.my_subkey }}
+
+
+{% for item in shop.metaobjects.product_filter_colour.values %}
+  {{filter_color_name}}
+{% endfor %}
+
+
+{% assign metaVariants = product.metafields.custom.products.value %}
+
+{% for item in product.metafields.reference.Metaobject.fields %}
+{{item.value}}
+{% endfor %}
+
+
+Add the following product tags: **test, Color-Name, 
+{% for metafields_item in product.metafields %}
+  {% for references_item in metafields_item.references %}
+  {% for fields_item in references_item.Metaobject.fields %}
+  {% if fields_item.key == 'filter_color_name' %}{{fields_item.value}}{% endif %},
+  {% endfor %},
+{% endfor %},
+{% endfor %}
