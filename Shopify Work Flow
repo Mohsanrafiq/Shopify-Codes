@@ -35,3 +35,11 @@ Add the following product tags: **test, Color-Name,
   {% endfor %},
 {% endfor %},
 {% endfor %}
+
+{% for metafields_item in getProductDataForeachitem.metafields %}
+  {% for references_item in metafields_item.references %}
+  {% for fields_item in references_item.Metaobject.fields %}
+  {% if fields_item.key == 'filter_color_name' %}{{fields_item.value}}{% endif %},
+{% endfor %},
+{% endfor %},
+{% endfor %}
